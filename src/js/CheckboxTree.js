@@ -10,7 +10,6 @@ import nodeShape from './nodeShape';
 class CheckboxTree extends React.Component {
     static propTypes = {
         nodes: PropTypes.arrayOf(nodeShape).isRequired,
-
         checked: PropTypes.arrayOf(PropTypes.string),
         disabled: PropTypes.bool,
         expandDisabled: PropTypes.bool,
@@ -51,6 +50,7 @@ class CheckboxTree extends React.Component {
 
         this.id = `rct-${nanoid(7)}`;
         this.flatNodes = {};
+        this.hasRadioGroups = false;
 
         this.flattenNodes(props.nodes);
         this.unserializeLists({
@@ -70,12 +70,21 @@ class CheckboxTree extends React.Component {
         this.unserializeLists({ checked, expanded });
     }
 
-    onCheck(node) {
-        // node is object from TreeNode
-        const { noCascade, onCheck } = this.props;
+    onCheck(nodeInfo) {
+        // nodeInfo is object from TreeNode
+        const { value, checked } = nodeInfo;
 
-        this.toggleChecked(node, node.checked, noCascade);
-        onCheck(this.serializeList('checked'), node);
+        const flatNode = this.flatNodes[value];
+        const { parent, self } = flatNode;
+
+        let { noCascade } = this.props;
+        if (flatNode.isRadio) {
+            noCascade = true;
+            this.turnSiblingsOff(parent, self);
+        }
+
+        this.toggleChecked(self, checked, noCascade);
+        this.props.onCheck(this.serializeList('checked'), self);
     }
 
     onExpand(node) {
@@ -86,11 +95,18 @@ class CheckboxTree extends React.Component {
         onExpand(this.serializeList('expanded'), node);
     }
 
+    getSiblingList(parent, node) {
+        if (parent.children) {
+            return parent.children.filter(child => child.value !== node.value);
+        }
+        return [];
+    }
+
     getShallowCheckState(node, noCascade) {
         // node is from props.nodes
         const flatNode = this.flatNodes[node.value];
 
-        if (flatNode.isLeaf || noCascade) {
+        if (flatNode.isLeaf || noCascade || flatNode.isRadioGroup || flatNode.isRadio) {
             return flatNode.checked ? 1 : 0;
         }
 
@@ -119,10 +135,10 @@ class CheckboxTree extends React.Component {
     }
 
     toggleChecked(node, isChecked, noCascade) {
-        // node is object from TreeNode
+        // node is from props.nodes
         const flatNode = this.flatNodes[node.value];
 
-        if (flatNode.isLeaf || noCascade) {
+        if (flatNode.isLeaf || noCascade || flatNode.isRadioGroup || flatNode.isRadio) {
             // Set the check status of a leaf node or an uncoupled parent
             this.toggleNode('checked', node, isChecked);
         } else {
@@ -138,6 +154,12 @@ class CheckboxTree extends React.Component {
         this.flatNodes[node.value][key] = toggleValue;
     }
 
+    turnSiblingsOff(parent, self) {
+        this.getSiblingList(parent, self).forEach((sibling) => {
+            this.toggleChecked(sibling, false, true);
+        });
+    }
+
     flattenNodes(nodes, parentNode = {}) {
         // nodes are from props.nodes
         if (!Array.isArray(nodes) || nodes.length === 0) {
@@ -146,10 +168,16 @@ class CheckboxTree extends React.Component {
 
         nodes.forEach((node) => {
             // set defaults, calculated values and tree references
+            if (node.isRadioGroup) {
+                this.hasRadioGroups = true;
+            }
+
             this.flatNodes[node.value] = {
                 parent: parentNode,
                 self: node,
                 isLeaf: !Array.isArray(node.children) || node.children.length === 0,
+                isRadio: Boolean(parentNode.isRadioGroup),
+                isRadioGroup: Boolean(node.isRadioGroup),
                 showCheckbox: node.showCheckbox !== undefined ? node.showCheckbox : true,
             };
             this.flattenNodes(node.children, node);
@@ -168,7 +196,13 @@ class CheckboxTree extends React.Component {
         Object.keys(lists).forEach((listKey) => {
             lists[listKey].forEach((value) => {
                 if (this.flatNodes[value] !== undefined) {
-                    this.flatNodes[value][listKey] = true;
+                    const flatNode = this.flatNodes[value];
+                    flatNode[listKey] = true;
+                    // this assures only one radio button is checked
+                    // and it will be the last sibling in the props.checked
+                    if (flatNode.isRadio && listKey === 'checked') {
+                        this.turnSiblingsOff(flatNode.parent, flatNode.self);
+                    }
                 }
             });
         });
@@ -235,6 +269,7 @@ class CheckboxTree extends React.Component {
                         label={node.label}
                         optimisticToggle={optimisticToggle}
                         isLeaf={flatNode.isLeaf}
+                        isRadio={flatNode.isRadio}
                         showCheckbox={showCheckbox}
                         showNodeIcon={showNodeIcon}
                         treeId={this.id}
