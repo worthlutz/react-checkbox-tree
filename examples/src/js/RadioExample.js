@@ -232,6 +232,7 @@ class RadioExample extends React.Component {
                 'overlays',
                 'parcels',
                 'parcels/special',
+                'parcels/special/farm_use',
                 'parcels/special/permit',
                 'type',
                 'size',
