@@ -3,81 +3,203 @@ import CheckboxTree from 'react-checkbox-tree';
 
 const nodes = [
     {
-        value: '/app',
-        label: 'app',
+        value: 'base_layers',
+        label: 'base layers',
         isRadioGroup: true,
         children: [
             {
-                value: '/app/Http',
-                label: 'Http',
+                value: 'default_base_layer',
+                label: 'default',
+            },
+            {
+                value: 'streets',
+                label: 'streets',
+            },
+            {
+                value: 'satellite',
+                label: 'satellite',
+            },
+            {
+                value: 'orthophotos',
+                label: 'orthophotos',
+                isRadioGroup: true,
                 children: [
                     {
-                        value: '/app/Http/Controllers',
-                        label: 'Controllers',
-                        children: [{
-                            value: '/app/Http/Controllers/WelcomeController.js',
-                            label: 'WelcomeController.js',
-                        }],
+                        value: 'b&w',
+                        label: 'black & white',
+                        isRadioGroup: true,
+                        children: [
+                            {
+                                value: 'b&w-2005',
+                                label: '2005',
+                            },
+                            {
+                                value: 'b&w-2010',
+                                label: '2010',
+                            },
+                            {
+                                value: 'b&w-2015',
+                                label: '2015',
+                            },
+                            {
+                                value: 'b&w-2018',
+                                label: '2018',
+                            },
+                        ],
                     },
                     {
-                        value: '/app/Http/routes.js',
-                        label: 'routes.js',
+                        value: 'color',
+                        label: 'color',
+                        isRadioGroup: true,
+                        children: [
+                            {
+                                value: 'color-2005',
+                                label: '2005',
+                            },
+                            {
+                                value: 'color-2010',
+                                label: '2010',
+                            },
+                            {
+                                value: 'color-2015',
+                                label: '2015',
+                            },
+                            {
+                                value: 'color-2018',
+                                label: '2018',
+                            },
+                        ],
                     },
                 ],
             },
-            {
-                value: '/app/Providers',
-                label: 'Providers',
-                children: [{
-                    value: '/app/Http/Providers/EventServiceProvider.js',
-                    label: 'EventServiceProvider.js',
-                }],
-            },
         ],
     },
     {
-        value: '/config',
-        label: 'config',
+        value: 'overlays',
+        label: 'overlays',
         children: [
             {
-                value: '/config/app.js',
-                label: 'app.js',
+                value: 'parcels',
+                label: 'parcels',
+                children: [
+                    {
+                        value: 'parcels/outline',
+                        label: 'outline',
+                    },
+                    {
+                        value: 'parcels/special',
+                        label: 'special',
+                        isRadioGroup: true,
+                        children: [
+                            {
+                                value: 'parcels/special/farm_use',
+                                label: 'farm use',
+                                children: [
+                                    {
+                                        value: 'type',
+                                        label: 'type',
+                                        children: [
+                                            {
+                                                value: 'livestock',
+                                                label: 'livestock',
+                                            },
+                                            {
+                                                value: 'crops',
+                                                label: 'crops',
+                                            },
+                                        ]
+                                    },
+                                    {
+                                        value: 'size',
+                                        label: 'size',
+                                        children: [
+                                            {
+                                                value: 'size/small',
+                                                label: 'small',
+                                            },
+                                            {
+                                                value: 'size/medium',
+                                                label: 'medium',
+                                            },
+                                            {
+                                                value: 'size/large',
+                                                label: 'large',
+                                            },
+                                        ]
+                                    },
+                                ]
+                            },
+                            {
+                                value: 'parcels/special/permit',
+                                label: 'permit',
+                            },
+                            {
+                                value: 'parcels/special/zoning',
+                                label: 'zoning',
+                            },
+                        ]
+                    },
+                    {
+                        value: 'parcels/text',
+                        label: 'text',
+                        children: [
+                            {
+                                value: 'pin_number',
+                                label: 'pin number',
+                            },
+                            {
+                                value: 'acreage',
+                                label: 'acreage',
+                            },
+                            {
+                                value: 'lotlines',
+                                label: 'lotlines',
+                            },
+                        ]
+                    },
+                ]
             },
             {
-                value: '/config/database.js',
-                label: 'database.js',
+                value: 'land_features',
+                label: 'land features',
+                children: [
+                    {
+                        value: 'contours',
+                        label: 'contours',
+                    },
+                    {
+                        value: 'flood_zones',
+                        label: 'flood_zones',
+                    },
+                    {
+                        value: 'land_cover',
+                        label: 'land cover',
+                    },
+                    {
+                        value: 'water_features',
+                        label: 'water features',
+                    },
+                ]
+            },
+            {
+                value: 'schools',
+                label: 'schools',
+                children: [
+                    {
+                        value: 'elementary',
+                        label: 'elementary',
+                    },
+                    {
+                        value: 'middle',
+                        label: 'middle',
+                    },
+                    {
+                        value: 'high',
+                        label: 'high',
+                    },
+                ]
             },
         ],
-    },
-    {
-        value: '/public',
-        label: 'public',
-        children: [
-            {
-                value: '/public/assets/',
-                label: 'assets',
-                children: [{
-                    value: '/public/assets/style.css',
-                    label: 'style.css',
-                }],
-            },
-            {
-                value: '/public/index.html',
-                label: 'index.html',
-            },
-        ],
-    },
-    {
-        value: '/.env',
-        label: '.env',
-    },
-    {
-        value: '/.gitignore',
-        label: '.gitignore',
-    },
-    {
-        value: '/README.md',
-        label: 'README.md',
     },
 ];
 
@@ -87,18 +209,32 @@ class RadioExample extends React.Component {
 
         this.state = {
             checked: [
-                '/app/Http',
-                '/app/Http/Controllers/WelcomeController.js',
-                '/app/Http/routes.js',
-                '/app/Providers',
-                '/public/assets/style.css',
-                '/public/index.html',
-                '/.gitignore',
+                'base_layers',
+                'default_base_layer',
+                'color',
+                'parcels/outline',
+                'parcels/special',
+                'crops',
+                'size/small',
+                'size/medium',
+                'size/large',
+                'middle',
+                'high',
+                'pin_number',
+                'acreage',
+                'lotlines',
             ],
             expanded: [
-                '/app',
-                '/app/Providers',
-                '/app/Http',
+                'base_layers',
+                'orthophotos',
+                'b&w',
+                'color',
+                'overlays',
+                'parcels',
+                'parcels/special',
+                'parcels/special/permit',
+                'type',
+                'size',
             ],
         };
 

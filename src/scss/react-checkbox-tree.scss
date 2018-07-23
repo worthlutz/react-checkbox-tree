@@ -162,12 +162,12 @@ $rct-clickable-focus: rgba($rct-icon-color, .2) !default;
 }
 
 .rct-icon-radio-off::before {
-  opacity: .8;
+  /*opacity: .9;*/
   content: "\f10c";
 }
 
 .rct-icon-radio-on::before {
-  opacity: .8;
+  /*opacity: .9;*/
   content: "\f192";
 }
 
